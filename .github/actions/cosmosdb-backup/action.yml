@@ -74,15 +74,18 @@ runs:
 
     - name: Run Python script
       run: |
+        # CosmosDB environment variables
         export COSMOS_KEY="${{ inputs.cosmos-key }}"
         export COSMOS_ENDPOINT="${{ inputs.cosmos-endpoint }}"
         export CONTAINER_NAME="${{ inputs.cosmos-container }}"
         export DATABASE_NAME="${{ inputs.cosmos-db }}"
         export RESOURCE_GROUP="${{ inputs.resource-group }}"
+
+        # Storage Account environment variables
         export STORAGE_ACCOUNT_NAME="${{ inputs.storage-account }}"
         export STORAGE_CONTAINER="${{ inputs.container-name }}"
-        
-        
+
+        # Azure Login environment variables
         export ARM_SUBSCRIPTION_ID="${{ inputs.azure-subscription-id }}"
         export ARM_TENANT_ID="${{ inputs.azure-tenant-id }}"
         export ARM_CLIENT_SECRET="${{ inputs.azure-client-secret }}"
