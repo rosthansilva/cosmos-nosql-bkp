@@ -114,5 +114,6 @@ runs:
           export ARM_CLIENT_ID="${{ inputs.ARM_CLIENT_ID }}"
           ACCOUNT_KEY=$(az storage account keys list --resource-group $RESOURCE_GROUP --account-name $STORAGE_ACCOUNT_NAME --query '[0].value' -o tsv)
           export ARM_ACCESS_KEY=$ACCOUNT_KEY
+          chmod +x ${{ github.action_path }}/azcopy.sh
           ${{ github.action_path }}/azcopy.sh $(ls backup_*.json | tail -n 1)
 
