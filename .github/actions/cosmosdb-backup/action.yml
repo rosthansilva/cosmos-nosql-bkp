@@ -54,6 +54,13 @@ runs:
       with:
         creds: ${{ inputs.azure-credentials }}
 
+    - name: Azure CLI script
+      uses: azure/cli@v2
+      with:
+        azcliversion: latest
+        inlineScript: |
+          az account show
+
     - name: Run Python script
       run: |
         export COSMOS_ENDPOINT="${{ inputs.cosmos-account }}.documents.azure.com"
