@@ -2,14 +2,14 @@
 
 # Instalar azcopy
 echo "Atualizando pacotes e instalando dependências..."
-sudo apt-get update
-sudo apt-get install -y wget
+apt-get update
+apt-get install -y wget
 
 echo "Baixando e instalando o pacote Microsoft..."
 wget https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb
-sudo dpkg -i packages-microsoft-prod.deb
-sudo apt-get update
-sudo apt-get install -y azcopy
+dpkg -i packages-microsoft-prod.deb
+apt-get update
+apt-get install -y azcopy
 rm -f packages-microsoft-prod.deb
 
 # Verificar se as variáveis de ambiente necessárias estão definidas
