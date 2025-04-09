@@ -13,6 +13,10 @@ inputs:
   azure-subscription-id:
     description: 'Azure Subscription ID'
     required: true
+  azure-client-secret:
+    description: 'Azure Client Secret'
+    required: true
+  
   cosmos-account:
     description: 'Name of the CosmosDB account'
     required: true
@@ -77,22 +81,30 @@ runs:
         export STORAGE_ACCOUNT_NAME="${{ inputs.storage-account }}"
         export STORAGE_CONTAINER="${{ inputs.container-name }}"
         export ACTION="${{ inputs.action }}"
-        export ARM_CLIENT_ID="${{ inputs.AZURE_CLIENT_ID }}""
-        export ARM_CLIENT_SECRET="${{ inputs.azure-client-id }}"
+        export ARM_CLIENT_ID="${{ inputs.azure-client-id }}"
+        export ARM_CLIENT_SECRET="${{ inputs.azure-client-secret }}"
         export ARM_SUBSCRIPTION_ID="${{ inputs.azure-subscription-id }}"
-        export ARM_TENANT_ID= ${{ inputs.AZURE_TENANT_ID }}
+        export ARM_TENANT_ID="${{ inputs.azure-tenant-id }}"
 
         echo "Iniciando Job de backup"
         python ${{ github.action_path }}/"${{ inputs.action }}".py 
+
+        OUTPUT_FILE=$(find ./backup -type f -name "cosmosdb_nosql_backup_*.json" | sort | tail -n 1)
+        if [ -f "$OUTPUT_FILE" ]; then
+          echo "output-file=$OUTPUT_FILE" >> $GITHUB_ENV
+        else
+          echo "Error: Output file not found!"
+          exit 1
+        fi
       shell: bash
 
     - name: Upload file to Azure Storage
       if: ${{ inputs.action == 'backup' }}
       run: |
         az storage blob upload \
-          --account-name ${{ inputs.storage-account }} \
-          --container-name ${{ inputs.container-name }} \
-          --file "${{ inputs.output-file }}" \
-          --name "${{ inputs.output-file }}" \
-          --auth-mode login
+              --account-name ${{ inputs.storage-account }} \
+              --container-name ${{ inputs.container-name }} \
+              --file "$OUTPUT_FILE" \
+              --name "$(basename "$OUTPUT_FILE")" \
+              --auth-mode login
       shell: bash

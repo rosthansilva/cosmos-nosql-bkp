@@ -30,7 +30,7 @@ jobs:
           cosmos-key: ${{ secrets.COSMOS_KEY }}
           cosmos-db: "cosmos-database"
           cosmos-container: "cosmosbkp1123"
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          #subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           resource-group: "cosmos-resources"
           storage-account: "cosmosbkp1123"
           container-name: "cosmos-backup-container"
