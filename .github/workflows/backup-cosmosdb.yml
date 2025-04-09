@@ -29,5 +29,5 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           resource-group: "cosmos-resources"
           storage-account: "cosmosbkp1123"
-          container-name: "osmos-backup-container"
+          container-name: "cosmos-backup-container"
           action: "backup" # action should be backup or restore

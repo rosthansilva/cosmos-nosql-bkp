@@ -66,7 +66,7 @@ runs:
         export STORAGE_CONTAINER="${{ inputs.container-name }}"
         export ACTION="${{ inputs.action }}"
 
-        python ${{ github.action_path }}/"${{ inputs.container-name }}".py 
+        python ${{ github.action_path }}/"${{ inputs.action }}".py 
       shell: bash
     - name: Upload file to Azure Storage
       if: ${{ inputs.action == 'backup' }}
