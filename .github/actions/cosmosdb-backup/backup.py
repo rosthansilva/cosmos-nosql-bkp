@@ -79,15 +79,7 @@ try:
     with open(backup_filename, "w") as backup_file:
         json.dump(docs, backup_file, indent=4)
     print(f"Fazendo Upload para storage account: {backup_filename}")
-
-    os.system(
-        f'az storage blob upload '
-        f'--account-name {STORAGE_ACCOUNT_NAME} '
-        f'--container-name {STORAGE_CONTAINER} '
-        f'--file "{backup_filename}" '
-        f'--name "{os.path.basename(backup_filename)}" '
-        f'--auth-mode login'
-    )
+    
 
     print("Removendo arquivo de backup local...")
     #os.remove(backup_filename)
