@@ -68,7 +68,7 @@ database = client.get_database_client(DATABASE_NAME)
 container = database.get_container_client(CONTAINER_NAME)
 
 # Criar arquivo de backup
-backup_filename = f"./backup/cosmosdb_nosql_backup_{datetime.now().strftime('%Y-%m-%d-%H%M')}.json"
+backup_filename = f"./cosmosdb_nosql_backup_{datetime.now().strftime('%Y-%m-%d-%H%M')}.json"
 
 print("Iniciando exportação dos documentos do Cosmos DB...")
 # Exportar os documentos do Cosmos DB para um arquivo JSON
@@ -81,7 +81,7 @@ try:
     print(f"Backup salvo localmente: {backup_filename}")
 
     print("Removendo arquivo de backup local...")
-    os.remove(backup_filename)
+    #os.remove(backup_filename)
     print("Arquivo de backup local removido com sucesso.")
 except Exception as e:
     print(f"Erro ao realizar backup: {e}")

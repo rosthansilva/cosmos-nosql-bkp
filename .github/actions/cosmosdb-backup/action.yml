@@ -72,15 +72,13 @@ runs:
 
     - name: Run Python script
       run: |
-        export COSMOS_ENDPOINT="${{ inputs.cosmos-account }}.documents.azure.com"
         export COSMOS_KEY="${{ inputs.cosmos-key }}"
-        export DATABASE_NAME="${{ inputs.cosmos-db }}"
         export CONTAINER_NAME="${{ inputs.cosmos-container }}"
-        export SUBSCRIPTION_ID="${{ inputs.azure-subscription-id }}"
+        export DATABASE_NAME="${{ inputs.cosmos-db }}"
         export RESOURCE_GROUP="${{ inputs.resource-group }}"
         export STORAGE_ACCOUNT_NAME="${{ inputs.storage-account }}"
         export STORAGE_CONTAINER="${{ inputs.container-name }}"
-        export ACTION="${{ inputs.action }}"
+        export SUBSCRIPTION_ID="${{ inputs.azure-subscription-id }}"
         export ARM_CLIENT_ID="${{ inputs.azure-client-id }}"
         export ARM_CLIENT_SECRET="${{ inputs.azure-client-secret }}"
         export ARM_SUBSCRIPTION_ID="${{ inputs.azure-subscription-id }}"
@@ -89,7 +87,7 @@ runs:
         echo "Iniciando Job de backup"
         python ${{ github.action_path }}/"${{ inputs.action }}".py 
 
-        OUTPUT_FILE=$(find ./backup -type f -name "cosmosdb_nosql_backup_*.json" | sort | tail -n 1)
+        OUTPUT_FILE=$(find . -type f -name "cosmosdb_nosql_backup_*.json" | sort | tail -n 1)
         if [ -f "$OUTPUT_FILE" ]; then
           echo "output-file=$OUTPUT_FILE" >> $GITHUB_ENV
         else
