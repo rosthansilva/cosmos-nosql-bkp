@@ -1,6 +1,9 @@
 name: "Backup CosmosDB to Azure Storage"
 description: "Backs up a CosmosDB instance to a Storage Account using Azure CLI"
 inputs:
+  azure-credentials:
+    description: 'Azure credentials in JSON format'
+    required: true
   azure-client-id:
     description: 'Azure Client ID'
     required: true
@@ -53,7 +56,7 @@ runs:
 
     - uses: azure/login@v2
       with:
-        subscription-id: ${{ inputs.AZURE_SUBSCRIPTION_ID }}
+        creds: ${{ inputs.azure-credentials }}
         
 
     - name: Azure CLI script
