@@ -46,6 +46,8 @@ runs:
 
     - name: Install dependencies
       run: pip install -r ${{ github.action_path }}/requirements.txt
+      shell: bash
+
 
     - name: Azure Login
       uses: azure/login@v1
@@ -65,7 +67,7 @@ runs:
         export ACTION="${{ inputs.action }}"
 
         python ${{ github.action_path }}/"${{ inputs.container-name }}".py 
-
+      shell: bash
     - name: Upload file to Azure Storage
       if: ${{ inputs.action == 'backup' }}
       run: |
@@ -75,3 +77,4 @@ runs:
           --file "${{ inputs.output-file }}" \
           --name "${{ inputs.output-file }}" \
           --auth-mode login
+      shell: bash
