@@ -1,6 +1,6 @@
 # Backup CosmosDB GitHub Action
 
-![CosmosDB Backup](https://miro.medium.com/v2/resize:fit:560/0*DCCKpu4-gAkUo2gb.png)
+![CosmosDB Backup](https://markpatton.cloud/wp-content/uploads/2020/03/definingbackuppolicycosmosdb-img-e1585163856238.png)
 
 This GitHub Action automates the process of backing up a CosmosDB database to Azure Storage. It is designed to run on a schedule or be triggered manually via the `workflow_dispatch` event .
 
