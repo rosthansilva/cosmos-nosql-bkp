@@ -107,10 +107,15 @@ runs:
     - name: Upload file to Azure Storage
       if: ${{ inputs.action == 'backup' }}
       run: |
-        az storage blob upload \
+        if [ -f "$OUTPUT_FILE" ]; then
+          az storage blob upload \
               --account-name ${{ inputs.STORAGE_ACCOUNT_NAME }} \
               --container-name ${{ inputs.STORAGE_CONTAINER }} \
               --file "$OUTPUT_FILE" \
               --name "$(basename "$OUTPUT_FILE")" \
               --auth-mode login
+        else
+          echo "Error: Output file not found for upload!"
+          exit 1
+        fi
       shell: bash
