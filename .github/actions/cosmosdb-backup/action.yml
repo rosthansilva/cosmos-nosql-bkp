@@ -65,6 +65,7 @@ runs:
         export STORAGE_ACCOUNT_NAME="${{ inputs.storage-account }}"
         export STORAGE_CONTAINER="${{ inputs.container-name }}"
         export ACTION="${{ inputs.action }}"
+        az account set -s "${{ inputs.subscription-id }}"
 
         python ${{ github.action_path }}/"${{ inputs.action }}".py 
       shell: bash
