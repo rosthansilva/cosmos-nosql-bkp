@@ -81,11 +81,13 @@ runs:
         export RESOURCE_GROUP="${{ inputs.resource-group }}"
         export STORAGE_ACCOUNT_NAME="${{ inputs.storage-account }}"
         export STORAGE_CONTAINER="${{ inputs.container-name }}"
-        export SUBSCRIPTION_ID="${{ inputs.azure-subscription-id }}"
-        export ARM_CLIENT_ID="${{ inputs.azure-client-id }}"
-        export ARM_CLIENT_SECRET="${{ inputs.azure-client-secret }}"
+        
+        
         export ARM_SUBSCRIPTION_ID="${{ inputs.azure-subscription-id }}"
         export ARM_TENANT_ID="${{ inputs.azure-tenant-id }}"
+        export ARM_CLIENT_SECRET="${{ inputs.azure-client-secret }}"
+        export SUBSCRIPTION_ID="${{ inputs.azure-subscription-id }}"
+        export ARM_CLIENT_ID="${{ inputs.azure-client-id }}"
 
         echo "Iniciando Job de backup"
         python ${{ github.action_path }}/"${{ inputs.action }}".py 
