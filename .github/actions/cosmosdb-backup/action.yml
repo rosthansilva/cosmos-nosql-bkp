@@ -115,11 +115,12 @@ runs:
 
             # Get the latest backup file
             BACKUP_FILE=$(ls backup_*.json | tail -n 1)
-
+            ACCOUNT_KEY=$(az storage account keys list --resource-group $RESOURCE_GROUP --account-name $STORAGE_ACCOUNT_NAME --query '[0].value' -o tsv)
+               export ARM_ACCESS_KEY=$ACCOUNT_KEY
             # Upload the backup file to Azure Storage
             az storage blob upload \
             --account-name ${{ inputs.STORAGE_ACCOUNT_NAME }} \
-            --account-key ${{ secrets.AZURE_STORAGE_KEY }} \
+            --account-key ${ARM_ACCESS_KEY} \
             --container-name ${{ inputs.STORAGE_CONTAINER }} \
             --file $BACKUP_FILE \
             --name $(basename $BACKUP_FILE)
