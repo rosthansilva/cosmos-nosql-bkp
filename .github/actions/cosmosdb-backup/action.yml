@@ -1,8 +1,14 @@
 name: "Backup CosmosDB to Azure Storage"
 description: "Backs up a CosmosDB instance to a Storage Account using Azure CLI"
 inputs:
-  azure-credentials:
-    description: 'JSON with Azure credentials'
+  azure-client-id:
+    description: 'Azure Client ID'
+    required: true
+  azure-tenant-id:
+    description: 'Azure Tenant ID'
+    required: true
+  azure-subscription-id:
+    description: 'Azure Subscription ID'
     required: true
   cosmos-account:
     description: 'Name of the CosmosDB account'
@@ -15,9 +21,6 @@ inputs:
     required: true
   cosmos-container:
     description: 'Name of the container'
-    required: true
-  subscription-id:
-    description: 'Azure subscription ID'
     required: true
   resource-group:
     description: 'Resource group of the CosmosDB'
@@ -48,11 +51,13 @@ runs:
       run: pip install -r ${{ github.action_path }}/requirements.txt
       shell: bash
 
-
     - uses: azure/login@v2
       with:
         creds: ${{ inputs.AZURE_CREDENTIALS }}
-
+        client-id: ${{ inputs.AZURE_CLIENT_ID }}
+        tenant-id: ${{ inputs.AZURE_TENANT_ID }}
+        subscription-id: ${{ inputs.AZURE_SUBSCRIPTION_ID }}
+        enable-AzPSSession: true
 
     - name: Azure CLI script
       uses: azure/cli@v2
@@ -67,15 +72,16 @@ runs:
         export COSMOS_KEY="${{ inputs.cosmos-key }}"
         export DATABASE_NAME="${{ inputs.cosmos-db }}"
         export CONTAINER_NAME="${{ inputs.cosmos-container }}"
-        export SUBSCRIPTION_ID="${{ inputs.subscription-id }}"
+        export SUBSCRIPTION_ID="${{ inputs.azure-subscription-id }}"
         export RESOURCE_GROUP="${{ inputs.resource-group }}"
         export STORAGE_ACCOUNT_NAME="${{ inputs.storage-account }}"
         export STORAGE_CONTAINER="${{ inputs.container-name }}"
         export ACTION="${{ inputs.action }}"
-        az account set -s "${{ inputs.subscription-id }}"
+        az account set -s "${{ inputs.azure-subscription-id }}"
 
         python ${{ github.action_path }}/"${{ inputs.action }}".py 
       shell: bash
+
     - name: Upload file to Azure Storage
       if: ${{ inputs.action == 'backup' }}
       run: |

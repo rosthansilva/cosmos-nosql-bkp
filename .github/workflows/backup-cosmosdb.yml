@@ -22,6 +22,9 @@ jobs:
         uses: ./.github/actions/cosmosdb-backup
         with:
           azure-credentials: ${{ secrets.AZURE_CREDENTIALS }}
+          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           cosmos-account: "https://cosmos-cosmosdb-account.documents.azure.com:443/"
           cosmos-key: ${{ secrets.COSMOS_KEY }}
           cosmos-db: "cosmos-database"
