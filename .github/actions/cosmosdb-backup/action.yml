@@ -93,6 +93,6 @@ runs:
           export ARM_TENANT_ID="${{ inputs.ARM_TENANT_ID }}"
           export ARM_CLIENT_SECRET="${{ inputs.ARM_CLIENT_SECRET }}"
           export SUBSCRIPTION_ID="${{ inputs.SUBSCRIPTION_ID }}"
-          export ARM_CLIENT_ID="${{ inputs.ARM_CLIENT_ID }}"
-          chmod +x  ${{ github.action_path }}/azcopy.sh
+          export ARM_CLIENT_ID="${{ inputs.ARM_CLIENT_ID }}" 
+          chmod +x  ${{ github.action_path }}/azcopy.sh $( find . -type f -name "backup*.json" -exec echo "Found file: {}" \;)
 

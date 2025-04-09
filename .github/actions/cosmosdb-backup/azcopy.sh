@@ -22,7 +22,7 @@ fi
 echo "Sincronizando arquivos com o Azure Blob Storage..."
 azcopy sync --compare-hash=md5 \
     --delete-destination=true \
-    --include-pattern="*.json" \
+    --include-pattern="$1" \
     "." "https://${AZURE_STORAGE_ACCOUNT}.blob.core.windows.net/${AZURE_CONTAINER_NAME}/"
 
 echo "Sincronização concluída."
