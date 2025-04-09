@@ -57,7 +57,7 @@ runs:
         client-id: ${{ inputs.AZURE_CLIENT_ID }}
         tenant-id: ${{ inputs.AZURE_TENANT_ID }}
         subscription-id: ${{ inputs.AZURE_SUBSCRIPTION_ID }}
-        enable-AzPSSession: true
+        
 
     - name: Azure CLI script
       uses: azure/cli@v2
