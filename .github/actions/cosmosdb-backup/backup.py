@@ -82,17 +82,17 @@ try:
     
     print(f"Fazendo Upload para storage account usando DefaultAzureCredential: {backup_filename}")
     
-    # Criar o BlobServiceClient usando DefaultAzureCredential
-    blob_service_client = BlobServiceClient(account_url=STORAGE_ACCOUNT_URL, credential=credential)
+    # # Criar o BlobServiceClient usando DefaultAzureCredential
+    # blob_service_client = BlobServiceClient(account_url=STORAGE_ACCOUNT_URL, credential=credential)
     
-    # Obter o cliente do container
-    container_client = blob_service_client.get_container_client(container=STORAGE_CONTAINER)
+    # # Obter o cliente do container
+    # container_client = blob_service_client.get_container_client(container=STORAGE_CONTAINER)
     
-    # Fazer o upload do arquivo JSON criado
-    with open(backup_filename, "rb") as data:
-        container_client.upload_blob(name=os.path.basename(backup_filename), data=data, overwrite=True)
-        
-    print(f"Upload concluído com sucesso: {backup_filename}")
+    # # Fazer o upload do arquivo JSON criado
+    # with open(backup_filename, "rb") as data:
+    #     container_client.upload_blob(name=os.path.basename(backup_filename), data=data, overwrite=True)
+
+    # print(f"Upload concluído com sucesso: {backup_filename}")
 
     print("Removendo arquivo de backup local...")
     #os.remove(backup_filename)
