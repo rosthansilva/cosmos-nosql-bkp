@@ -16,7 +16,9 @@ inputs:
   azure-client-secret:
     description: 'Azure Client Secret'
     required: true
-  
+  cosmos-endpoint:
+    description: 'Endpoint of the CosmosDB account'
+    required: true
   cosmos-account:
     description: 'Name of the CosmosDB account'
     required: true
@@ -73,6 +75,7 @@ runs:
     - name: Run Python script
       run: |
         export COSMOS_KEY="${{ inputs.cosmos-key }}"
+        export COSMOS_ENDPOINT="${{ inputs.cosmos-endpoint }}"
         export CONTAINER_NAME="${{ inputs.cosmos-container }}"
         export DATABASE_NAME="${{ inputs.cosmos-db }}"
         export RESOURCE_GROUP="${{ inputs.resource-group }}"

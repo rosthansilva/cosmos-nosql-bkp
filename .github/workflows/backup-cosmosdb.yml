@@ -30,6 +30,7 @@ jobs:
           cosmos-key: ${{ secrets.COSMOS_KEY }}
           cosmos-db: "cosmos-database"
           cosmos-container: "cosmosbkp1123"
+          cosmos-endpoint: "https://cosmos-cosmosdb-account.documents.azure.com:443/"
           #subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           resource-group: "cosmos-resources"
           storage-account: "cosmosbkp1123"
