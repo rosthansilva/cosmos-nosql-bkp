@@ -72,37 +72,40 @@ runs:
         inlineScript: |
           az account show
 
-    - name: Run Python script
-      run: |
-        # CosmosDB environment variables
-        export COSMOS_KEY="${{ inputs.COSMOS_KEY }}"
-        export COSMOS_ENDPOINT="${{ inputs.COSMOS_ENDPOINT }}"
-        export CONTAINER_NAME="${{ inputs.CONTAINER_NAME }}"
-        export DATABASE_NAME="${{ inputs.DATABASE_NAME }}"
-        export RESOURCE_GROUP="${{ inputs.RESOURCE_GROUP }}"
-
-        # Storage Account environment variables
-        export STORAGE_ACCOUNT_NAME="${{ inputs.STORAGE_ACCOUNT_NAME }}"
-        export STORAGE_CONTAINER="${{ inputs.STORAGE_CONTAINER }}"
-
-        # Azure Login environment variables
-        export ARM_SUBSCRIPTION_ID="${{ inputs.ARM_SUBSCRIPTION_ID }}"
-        export ARM_TENANT_ID="${{ inputs.ARM_TENANT_ID }}"
-        export ARM_CLIENT_SECRET="${{ inputs.ARM_CLIENT_SECRET }}"
-        export SUBSCRIPTION_ID="${{ inputs.SUBSCRIPTION_ID }}"
-        export ARM_CLIENT_ID="${{ inputs.ARM_CLIENT_ID }}"
-        EXPORT STORAGE_ACCOUNT_KEY=$(az storage account keys list --account-name ${{ inputs.STORAGE_ACCOUNT_NAME }} --query '[0].value' -o tsv)
-        echo "Iniciando Job de backup"
-        python ${{ github.action_path }}/"${{ inputs.action }}".py 
-
-        # OUTPUT_FILE=$(find . -type f -name "cosmosdb_nosql_backup_*.json" | sort | tail -n 1)
-        # if [ -f "$OUTPUT_FILE" ]; then
-        #   echo "output-file=$OUTPUT_FILE" >> $GITHUB_ENV
-        # else
-        #   echo "Error: Output file not found!"
-        #   exit 1
-        # fi
-      shell: bash
+    - name: Upload Files
+      uses: azure/cli@v2
+      with:
+        azcliversion: latest
+        inlineScript: |
+          az account show
+          # CosmosDB environment variables
+          export COSMOS_KEY="${{ inputs.COSMOS_KEY }}"
+          export COSMOS_ENDPOINT="${{ inputs.COSMOS_ENDPOINT }}"
+          export CONTAINER_NAME="${{ inputs.CONTAINER_NAME }}"
+          export DATABASE_NAME="${{ inputs.DATABASE_NAME }}"
+          export RESOURCE_GROUP="${{ inputs.RESOURCE_GROUP }}"
+  
+          # Storage Account environment variables
+          export STORAGE_ACCOUNT_NAME="${{ inputs.STORAGE_ACCOUNT_NAME }}"
+          export STORAGE_CONTAINER="${{ inputs.STORAGE_CONTAINER }}"
+  
+          # Azure Login environment variables
+          export ARM_SUBSCRIPTION_ID="${{ inputs.ARM_SUBSCRIPTION_ID }}"
+          export ARM_TENANT_ID="${{ inputs.ARM_TENANT_ID }}"
+          export ARM_CLIENT_SECRET="${{ inputs.ARM_CLIENT_SECRET }}"
+          export SUBSCRIPTION_ID="${{ inputs.SUBSCRIPTION_ID }}"
+          export ARM_CLIENT_ID="${{ inputs.ARM_CLIENT_ID }}"
+          EXPORT STORAGE_ACCOUNT_KEY=$(az storage account keys list --account-name ${{ inputs.STORAGE_ACCOUNT_NAME }} --query '[0].value' -o tsv)
+          echo "Iniciando Job de backup"
+          python ${{ github.action_path }}/"${{ inputs.action }}".py 
+  
+          # OUTPUT_FILE=$(find . -type f -name "cosmosdb_nosql_backup_*.json" | sort | tail -n 1)
+          # if [ -f "$OUTPUT_FILE" ]; then
+          #   echo "output-file=$OUTPUT_FILE" >> $GITHUB_ENV
+          # else
+          #   echo "Error: Output file not found!"
+          #   exit 1
+          # fi
 
     # - name: Upload file to Azure Storage
     #   if: ${{ inputs.action == 'backup' }}
