@@ -2,8 +2,6 @@ name: Backup CosmosDB
 
 on:
   workflow_dispatch:
-  # this workflow will be triggered by the cron job helm chart
-  # the cron job helm chart will be used to schedule the backup
   schedule:
     - cron: "0 2 * * *" # Every day at 2 AM UTC
   push:
@@ -21,18 +19,16 @@ jobs:
       - name: Backup CosmosDB to Azure Storage
         uses: ./.github/actions/cosmosdb-backup
         with:
-          azure-credentials: ${{ secrets.AZURE_CREDENTIALS }}
-          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          azure-tenant-id: ${{ secrets.TENANT_ID }}
-          azure-client-secret: ${{ secrets.CLIENT_SECRET }}
-          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          cosmos-account: "https://cosmos-cosmosdb-account.documents.azure.com:443/"
-          cosmos-key: ${{ secrets.COSMOS_KEY }}
-          cosmos-db: "cosmos-database"
-          cosmos-container: "cosmos-container-src"
-          cosmos-endpoint: "https://cosmos-cosmosdb-account.documents.azure.com:443/"
-          #subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          resource-group: "cosmos-resources"
-          storage-account: "cosmosbkp1123"
-          container-name: "cosmos-backup-container"
-          action: "backup" # action should be backup or restore
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.TENANT_ID }}
+          COSMOS_ENDPOINT: "https://cosmos-cosmosdb-account.documents.azure.com:443/"
+          COSMOS_KEY: ${{ secrets.COSMOS_KEY }}
+          CONTAINER_NAME: "cosmos-container-src"
+          DATABASE_NAME: "cosmos-database"
+          RESOURCE_GROUP: "cosmos-resources"
+          STORAGE_ACCOUNT_NAME: "cosmosbkp1123"
+          STORAGE_CONTAINER: "cosmos-backup-container"
+          SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          action: "backup"

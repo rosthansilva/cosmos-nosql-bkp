@@ -1,44 +1,41 @@
 name: "Backup CosmosDB to Azure Storage"
 description: "Backs up a CosmosDB instance to a Storage Account using Azure CLI"
 inputs:
-  azure-credentials:
-    description: 'Azure credentials in JSON format'
-    required: true
-  azure-client-id:
+  ARM_CLIENT_ID:
     description: 'Azure Client ID'
     required: true
-  azure-tenant-id:
-    description: 'Azure Tenant ID'
-    required: true
-  azure-subscription-id:
-    description: 'Azure Subscription ID'
-    required: true
-  azure-client-secret:
+  ARM_CLIENT_SECRET:
     description: 'Azure Client Secret'
     required: true
-  cosmos-endpoint:
+  ARM_SUBSCRIPTION_ID:
+    description: 'Azure Subscription ID'
+    required: true
+  ARM_TENANT_ID:
+    description: 'Azure Tenant ID'
+    required: true
+  COSMOS_ENDPOINT:
     description: 'Endpoint of the CosmosDB account'
     required: true
-  cosmos-account:
-    description: 'Name of the CosmosDB account'
-    required: true
-  cosmos-key:
+  COSMOS_KEY:
     description: 'Access key for CosmosDB'
     required: true
-  cosmos-db:
-    description: 'Name of the database'
+  CONTAINER_NAME:
+    description: 'Name of the container in CosmosDB'
     required: true
-  cosmos-container:
-    description: 'Name of the container'
+  DATABASE_NAME:
+    description: 'Name of the database in CosmosDB'
     required: true
-  resource-group:
+  RESOURCE_GROUP:
     description: 'Resource group of the CosmosDB'
     required: true
-  storage-account:
+  STORAGE_ACCOUNT_NAME:
     description: 'Name of the Storage Account'
     required: true
-  container-name:
+  STORAGE_CONTAINER:
     description: 'Name of the container in the Storage Account'
+    required: true
+  SUBSCRIPTION_ID:
+    description: 'Azure Subscription ID (duplicate for compatibility)'
     required: true
   action:
     description: 'Action to perform: backup or restore'
@@ -62,7 +59,7 @@ runs:
 
     - uses: azure/login@v2
       with:
-        creds: ${{ inputs.azure-credentials }}
+        creds: ${{ inputs.ARM_CLIENT_SECRET }}
         
 
     - name: Azure CLI script
@@ -75,22 +72,22 @@ runs:
     - name: Run Python script
       run: |
         # CosmosDB environment variables
-        export COSMOS_KEY="${{ inputs.cosmos-key }}"
-        export COSMOS_ENDPOINT="${{ inputs.cosmos-endpoint }}"
-        export CONTAINER_NAME="${{ inputs.cosmos-container }}"
-        export DATABASE_NAME="${{ inputs.cosmos-db }}"
-        export RESOURCE_GROUP="${{ inputs.resource-group }}"
+        export COSMOS_KEY="${{ inputs.COSMOS_KEY }}"
+        export COSMOS_ENDPOINT="${{ inputs.COSMOS_ENDPOINT }}"
+        export CONTAINER_NAME="${{ inputs.CONTAINER_NAME }}"
+        export DATABASE_NAME="${{ inputs.DATABASE_NAME }}"
+        export RESOURCE_GROUP="${{ inputs.RESOURCE_GROUP }}"
 
         # Storage Account environment variables
-        export STORAGE_ACCOUNT_NAME="${{ inputs.storage-account }}"
-        export STORAGE_CONTAINER="${{ inputs.container-name }}"
+        export STORAGE_ACCOUNT_NAME="${{ inputs.STORAGE_ACCOUNT_NAME }}"
+        export STORAGE_CONTAINER="${{ inputs.STORAGE_CONTAINER }}"
 
         # Azure Login environment variables
-        export ARM_SUBSCRIPTION_ID="${{ inputs.azure-subscription-id }}"
-        export ARM_TENANT_ID="${{ inputs.azure-tenant-id }}"
-        export ARM_CLIENT_SECRET="${{ inputs.azure-client-secret }}"
-        export SUBSCRIPTION_ID="${{ inputs.azure-subscription-id }}"
-        export ARM_CLIENT_ID="${{ inputs.azure-client-id }}"
+        export ARM_SUBSCRIPTION_ID="${{ inputs.ARM_SUBSCRIPTION_ID }}"
+        export ARM_TENANT_ID="${{ inputs.ARM_TENANT_ID }}"
+        export ARM_CLIENT_SECRET="${{ inputs.ARM_CLIENT_SECRET }}"
+        export SUBSCRIPTION_ID="${{ inputs.SUBSCRIPTION_ID }}"
+        export ARM_CLIENT_ID="${{ inputs.ARM_CLIENT_ID }}"
 
         echo "Iniciando Job de backup"
         python ${{ github.action_path }}/"${{ inputs.action }}".py 
@@ -108,8 +105,8 @@ runs:
       if: ${{ inputs.action == 'backup' }}
       run: |
         az storage blob upload \
-              --account-name ${{ inputs.storage-account }} \
-              --container-name ${{ inputs.container-name }} \
+              --account-name ${{ inputs.STORAGE_ACCOUNT_NAME }} \
+              --container-name ${{ inputs.STORAGE_CONTAINER }} \
               --file "$OUTPUT_FILE" \
               --name "$(basename "$OUTPUT_FILE")" \
               --auth-mode login
