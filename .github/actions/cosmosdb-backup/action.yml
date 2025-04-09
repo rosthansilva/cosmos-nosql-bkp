@@ -106,7 +106,7 @@ runs:
           #   echo "Error: Output file not found!"
           #   exit 1
           # fi
-      shell: bash
+      
     
     - name: Azure CLI script
       uses: azure/cli@v2
