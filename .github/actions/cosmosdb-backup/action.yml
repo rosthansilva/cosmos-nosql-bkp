@@ -101,19 +101,26 @@ runs:
       with:
         azcliversion: latest
         inlineScript: |
-          # Storage Account environment variables
-          export STORAGE_ACCOUNT_NAME="${{ inputs.STORAGE_ACCOUNT_NAME }}"
-          export STORAGE_CONTAINER="${{ inputs.STORAGE_CONTAINER }}"
-          export RESOURCE_GROUP="${{ inputs.RESOURCE_GROUP }}"
+            # Storage Account environment variables
+            export STORAGE_ACCOUNT_NAME="${{ inputs.STORAGE_ACCOUNT_NAME }}"
+            export STORAGE_CONTAINER="${{ inputs.STORAGE_CONTAINER }}"
+            export RESOURCE_GROUP="${{ inputs.RESOURCE_GROUP }}"
 
-          # Azure Login environment variables
-          export ARM_SUBSCRIPTION_ID="${{ inputs.ARM_SUBSCRIPTION_ID }}"
-          export ARM_TENANT_ID="${{ inputs.ARM_TENANT_ID }}"
-          export ARM_CLIENT_SECRET="${{ inputs.ARM_CLIENT_SECRET }}"
-          export SUBSCRIPTION_ID="${{ inputs.SUBSCRIPTION_ID }}"
-          export ARM_CLIENT_ID="${{ inputs.ARM_CLIENT_ID }}"
-          ACCOUNT_KEY=$(az storage account keys list --resource-group $RESOURCE_GROUP --account-name $STORAGE_ACCOUNT_NAME --query '[0].value' -o tsv)
-          export ARM_ACCESS_KEY=$ACCOUNT_KEY
-          chmod +x ${{ github.action_path }}/azcopy.sh
-          ${{ github.action_path }}/azcopy.sh $(ls backup_*.json | tail -n 1)
+            # Azure Login environment variables
+            export ARM_SUBSCRIPTION_ID="${{ inputs.ARM_SUBSCRIPTION_ID }}"
+            export ARM_TENANT_ID="${{ inputs.ARM_TENANT_ID }}"
+            export ARM_CLIENT_SECRET="${{ inputs.ARM_CLIENT_SECRET }}"
+            export SUBSCRIPTION_ID="${{ inputs.SUBSCRIPTION_ID }}"
+            export ARM_CLIENT_ID="${{ inputs.ARM_CLIENT_ID }}"
+
+            # Get the latest backup file
+            BACKUP_FILE=$(ls backup_*.json | tail -n 1)
+
+            # Upload the backup file to Azure Storage
+            az storage blob upload \
+            --account-name ${{ inputs.STORAGE_ACCOUNT_NAME }} \
+            --account-key ${{ secrets.AZURE_STORAGE_KEY }} \
+            --container-name ${{ inputs.STORAGE_CONTAINER }} \
+            --file $BACKUP_FILE \
+            --name $(basename $BACKUP_FILE)
 
