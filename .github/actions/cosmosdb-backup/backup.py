@@ -79,7 +79,13 @@ try:
     with open(backup_filename, "w") as backup_file:
         json.dump(docs, backup_file, indent=4)
     print(f"Fazendo Upload para storage account: {backup_filename}")
+    blob_service_client = BlobServiceClient(account_url=STORAGE_ACCOUNT_URL, credential=credential)
+    blob_client = blob_service_client.get_blob_client(container=STORAGE_CONTAINER, blob=os.path.basename(backup_filename))
     
+    with open(backup_filename, "rb") as data:
+        blob_client.upload_blob(data, overwrite=True)
+    
+    print(f"Upload concluído com sucesso: {backup_filename}")
 
     print("Removendo arquivo de backup local...")
     #os.remove(backup_filename)

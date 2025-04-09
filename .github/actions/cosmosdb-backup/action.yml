@@ -95,27 +95,27 @@ runs:
         echo "Iniciando Job de backup"
         python ${{ github.action_path }}/"${{ inputs.action }}".py 
 
-        OUTPUT_FILE=$(find . -type f -name "cosmosdb_nosql_backup_*.json" | sort | tail -n 1)
-        if [ -f "$OUTPUT_FILE" ]; then
-          echo "output-file=$OUTPUT_FILE" >> $GITHUB_ENV
-        else
-          echo "Error: Output file not found!"
-          exit 1
-        fi
+        # OUTPUT_FILE=$(find . -type f -name "cosmosdb_nosql_backup_*.json" | sort | tail -n 1)
+        # if [ -f "$OUTPUT_FILE" ]; then
+        #   echo "output-file=$OUTPUT_FILE" >> $GITHUB_ENV
+        # else
+        #   echo "Error: Output file not found!"
+        #   exit 1
+        # fi
       shell: bash
 
-    - name: Upload file to Azure Storage
-      if: ${{ inputs.action == 'backup' }}
-      run: |
-        if [ -f "$OUTPUT_FILE" ]; then
-          az storage blob upload \
-              --account-name ${{ inputs.STORAGE_ACCOUNT_NAME }} \
-              --container-name ${{ inputs.STORAGE_CONTAINER }} \
-              --file "$OUTPUT_FILE" \
-              --name "$(basename "$OUTPUT_FILE")" \
-              --auth-mode login
-        else
-          echo "Error: Output file not found for upload!"
-          exit 1
-        fi
-      shell: bash
+    # - name: Upload file to Azure Storage
+    #   if: ${{ inputs.action == 'backup' }}
+    #   run: |
+    #     if [ -f "$OUTPUT_FILE" ]; then
+    #       az storage blob upload \
+    #           --account-name ${{ inputs.STORAGE_ACCOUNT_NAME }} \
+    #           --container-name ${{ inputs.STORAGE_CONTAINER }} \
+    #           --file "$OUTPUT_FILE" \
+    #           --name "$(basename "$OUTPUT_FILE")" \
+    #           --auth-mode login
+    #     else
+    #       echo "Error: Output file not found for upload!"
+    #       exit 1
+    #     fi
+    #   shell: bash
