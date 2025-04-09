@@ -91,7 +91,8 @@ runs:
         export ARM_CLIENT_SECRET="${{ inputs.ARM_CLIENT_SECRET }}"
         export SUBSCRIPTION_ID="${{ inputs.SUBSCRIPTION_ID }}"
         export ARM_CLIENT_ID="${{ inputs.ARM_CLIENT_ID }}"
-        
+        ACCOUNT_KEY=$(az storage account keys list --resource-group $RESOURCE_GROUP --account-name $STORAGE_ACCOUNT_NAME --query '[0].value' -o tsv)
+        export ARM_ACCESS_KEY=$ACCOUNT_KEY
         echo "Iniciando Job de backup"
         python ${{ github.action_path }}/"${{ inputs.action }}".py 
 
@@ -104,27 +105,29 @@ runs:
         # fi
       shell: bash
 
-    - name: Azure CLI script Az Copy Upload Backup
-      uses: azure/cli@v2
-      with:
-        azcliversion: latest
-        inlineScript: |
-          # CosmosDB environment variables
-          export COSMOS_KEY="${{ inputs.COSMOS_KEY }}"
-          export COSMOS_ENDPOINT="${{ inputs.COSMOS_ENDPOINT }}"
-          export CONTAINER_NAME="${{ inputs.CONTAINER_NAME }}"
-          export DATABASE_NAME="${{ inputs.DATABASE_NAME }}"
-          export RESOURCE_GROUP="${{ inputs.RESOURCE_GROUP }}"
+    # - name: Azure CLI script Az Copy Upload Backup
+    #   uses: azure/cli@v2
+    #   with:
+    #     azcliversion: latest
+    #     inlineScript: |
+    #       # CosmosDB environment variables
+    #       export COSMOS_KEY="${{ inputs.COSMOS_KEY }}"
+    #       export COSMOS_ENDPOINT="${{ inputs.COSMOS_ENDPOINT }}"
+    #       export CONTAINER_NAME="${{ inputs.CONTAINER_NAME }}"
+    #       export DATABASE_NAME="${{ inputs.DATABASE_NAME }}"
+    #       export RESOURCE_GROUP="${{ inputs.RESOURCE_GROUP }}"
   
-          # Storage Account environment variables
-          export STORAGE_ACCOUNT_NAME="${{ inputs.STORAGE_ACCOUNT_NAME }}"
-          export STORAGE_CONTAINER="${{ inputs.STORAGE_CONTAINER }}"
+    #       # Storage Account environment variables
+    #       export STORAGE_ACCOUNT_NAME="${{ inputs.STORAGE_ACCOUNT_NAME }}"
+    #       export STORAGE_CONTAINER="${{ inputs.STORAGE_CONTAINER }}"
   
-          # Azure Login environment variables
-          export ARM_SUBSCRIPTION_ID="${{ inputs.ARM_SUBSCRIPTION_ID }}"
-          export ARM_TENANT_ID="${{ inputs.ARM_TENANT_ID }}"
-          export ARM_CLIENT_SECRET="${{ inputs.ARM_CLIENT_SECRET }}"
-          export SUBSCRIPTION_ID="${{ inputs.SUBSCRIPTION_ID }}"
-          export ARM_CLIENT_ID="${{ inputs.ARM_CLIENT_ID }}"
-          chmod +x  ${{ github.action_path }}/azcopy.sh
+    #       # Azure Login environment variables
+    #       export ARM_SUBSCRIPTION_ID="${{ inputs.ARM_SUBSCRIPTION_ID }}"
+    #       export ARM_TENANT_ID="${{ inputs.ARM_TENANT_ID }}"
+    #       export ARM_CLIENT_SECRET="${{ inputs.ARM_CLIENT_SECRET }}"
+    #       export SUBSCRIPTION_ID="${{ inputs.SUBSCRIPTION_ID }}"
+    #       export ARM_CLIENT_ID="${{ inputs.ARM_CLIENT_ID }}"
+    #       ACCOUNT_KEY=$(az storage account keys list --resource-group $RESOURCE_GROUP --account-name $STORAGE_ACCOUNT_NAME --query '[0].value' -o tsv)
+    #       export ARM_ACCESS_KEY=$ACCOUNT_KEY
+    #       chmod +x  ${{ github.action_path }}/azcopy.sh
 
