@@ -91,7 +91,7 @@ runs:
         export ARM_CLIENT_SECRET="${{ inputs.ARM_CLIENT_SECRET }}"
         export SUBSCRIPTION_ID="${{ inputs.SUBSCRIPTION_ID }}"
         export ARM_CLIENT_ID="${{ inputs.ARM_CLIENT_ID }}"
-
+        EXPORT STORAGE_ACCOUNT_KEY=$(az storage account keys list --account-name ${{ inputs.STORAGE_ACCOUNT_NAME }} --query '[0].value' -o tsv)
         echo "Iniciando Job de backup"
         python ${{ github.action_path }}/"${{ inputs.action }}".py 
 
