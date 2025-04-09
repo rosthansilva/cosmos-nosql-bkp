@@ -53,9 +53,6 @@ runs:
 
     - uses: azure/login@v2
       with:
-        creds: ${{ inputs.AZURE_CREDENTIALS }}
-        client-id: ${{ inputs.AZURE_CLIENT_ID }}
-        tenant-id: ${{ inputs.AZURE_TENANT_ID }}
         subscription-id: ${{ inputs.AZURE_SUBSCRIPTION_ID }}
         
 
@@ -77,8 +74,12 @@ runs:
         export STORAGE_ACCOUNT_NAME="${{ inputs.storage-account }}"
         export STORAGE_CONTAINER="${{ inputs.container-name }}"
         export ACTION="${{ inputs.action }}"
-        az account set -s "${{ inputs.azure-subscription-id }}"
+        export ARM_CLIENT_ID="${{ inputs.AZURE_CLIENT_ID }}""
+        export ARM_CLIENT_SECRET="${{ inputs.azure-client-id }}"
+        export ARM_SUBSCRIPTION_ID="${{ inputs.azure-subscription-id }}"
+        export ARM_TENANT_ID= ${{ inputs.AZURE_TENANT_ID }}
 
+        echo "Iniciando Job de backup"
         python ${{ github.action_path }}/"${{ inputs.action }}".py 
       shell: bash
 
