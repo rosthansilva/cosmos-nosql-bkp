@@ -94,7 +94,8 @@ jobs:
                     action: "backup"
 ```
 
-## Notes
+## Notes - New
+
 
 - Ensure that the Azure credentials and CosmosDB keys are securely stored as GitHub secrets.
 - Update the `cron` expression in the `schedule` section to adjust the backup frequency based on your requirements. For example, to run the backup every 6 hours, use `0 */6 * * *`.
