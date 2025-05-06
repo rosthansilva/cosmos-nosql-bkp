@@ -1,0 +1,209 @@
+name: "Backup CosmosDB to Azure Storage"
+description: "Backs up a CosmosDB instance to a Storage Account using Azure CLI"
+inputs:
+  AZURE_CREDENTIALS:
+    description: 'Azure credentials in JSON format'
+    required: true
+  ARM_CLIENT_ID:
+    description: 'Azure Client ID'
+    required: true
+  ARM_CLIENT_SECRET:
+    description: 'Azure Client Secret'
+    required: true
+  ARM_SUBSCRIPTION_ID:
+    description: 'Azure Subscription ID'
+    required: true
+  ARM_TENANT_ID:
+    description: 'Azure Tenant ID'
+    required: true
+  COSMOS_ENDPOINT:
+    description: 'Endpoint of the CosmosDB account'
+    required: true
+  COSMOS_KEY:
+    description: 'Access key for CosmosDB'
+    required: true
+  CONTAINER_NAME:
+    description: 'Name of the container in CosmosDB'
+    required: true
+  DATABASE_NAME:
+    description: 'Name of the database in CosmosDB'
+    required: true
+  RESOURCE_GROUP:
+    description: 'Resource group of the CosmosDB'
+    required: true
+  STORAGE_ACCOUNT_NAME:
+    description: 'Name of the Storage Account'
+    required: true
+  STORAGE_CONTAINER:
+    description: 'Name of the container in the Storage Account'
+    required: true
+  SUBSCRIPTION_ID:
+    description: 'Azure Subscription ID (duplicate for compatibility)'
+    required: true
+  action:
+    description: 'Action to perform: backup or restore'
+    required: true
+    default: 'backup'
+    options:
+      - backup
+      - restore
+      - full_backup
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: pip install -r ${{ github.action_path }}/requirements.txt
+      shell: bash
+
+    - uses: azure/login@v2
+      with:
+        creds: ${{ inputs.AZURE_CREDENTIALS }}
+        
+
+    - name: Azure CLI script
+      uses: azure/cli@v2
+      with:
+        azcliversion: latest
+        inlineScript: |
+          az account show
+
+    - name: Run Python script for backup
+      if: ${{ inputs.action == 'backup' }}
+      run: |
+        # CosmosDB environment variables
+        export COSMOS_KEY="${{ inputs.COSMOS_KEY }}"
+        export COSMOS_ENDPOINT="${{ inputs.COSMOS_ENDPOINT }}"
+        export CONTAINER_NAME="${{ inputs.CONTAINER_NAME }}"
+        export DATABASE_NAME="${{ inputs.DATABASE_NAME }}"
+        export RESOURCE_GROUP="${{ inputs.RESOURCE_GROUP }}"
+
+        # Storage Account environment variables
+        export STORAGE_ACCOUNT_NAME="${{ inputs.STORAGE_ACCOUNT_NAME }}"
+        export STORAGE_CONTAINER="${{ inputs.STORAGE_CONTAINER }}"
+
+        # Azure Login environment variables
+        export ARM_SUBSCRIPTION_ID="${{ inputs.ARM_SUBSCRIPTION_ID }}"
+        export ARM_TENANT_ID="${{ inputs.ARM_TENANT_ID }}"
+        export ARM_CLIENT_SECRET="${{ inputs.ARM_CLIENT_SECRET }}"
+        export SUBSCRIPTION_ID="${{ inputs.SUBSCRIPTION_ID }}"
+        export ARM_CLIENT_ID="${{ inputs.ARM_CLIENT_ID }}"
+        echo "Iniciando Job de backup"
+        python ${{ github.action_path }}/"${{ inputs.action }}".py 
+
+      shell: bash
+    
+    - name: Run Python script for backup
+      if: ${{ inputs.action == 'full_backup' }}
+      run: |
+        # CosmosDB environment variables
+        export COSMOS_KEY="${{ inputs.COSMOS_KEY }}"
+        export COSMOS_ENDPOINT="${{ inputs.COSMOS_ENDPOINT }}"
+        export CONTAINER_NAME="${{ inputs.CONTAINER_NAME }}"
+        export DATABASE_NAME="${{ inputs.DATABASE_NAME }}"
+        export RESOURCE_GROUP="${{ inputs.RESOURCE_GROUP }}"
+
+        # Storage Account environment variables
+        export STORAGE_ACCOUNT_NAME="${{ inputs.STORAGE_ACCOUNT_NAME }}"
+        export STORAGE_CONTAINER="${{ inputs.STORAGE_CONTAINER }}"
+
+        # Azure Login environment variables
+        export ARM_SUBSCRIPTION_ID="${{ inputs.ARM_SUBSCRIPTION_ID }}"
+        export ARM_TENANT_ID="${{ inputs.ARM_TENANT_ID }}"
+        export ARM_CLIENT_SECRET="${{ inputs.ARM_CLIENT_SECRET }}"
+        export SUBSCRIPTION_ID="${{ inputs.SUBSCRIPTION_ID }}"
+        export ARM_CLIENT_ID="${{ inputs.ARM_CLIENT_ID }}"
+        echo "Iniciando Job de backup"
+        python ${{ github.action_path }}/"${{ inputs.action }}".py 
+
+      shell: bash
+
+    - name: Azure CLI script Az Copy Upload Backup
+      if: ${{ inputs.action == 'backup' }}
+      uses: azure/cli@v2
+      with:
+        azcliversion: latest
+        inlineScript: |
+            # Storage Account environment variables
+            export STORAGE_ACCOUNT_NAME="${{ inputs.STORAGE_ACCOUNT_NAME }}"
+            export STORAGE_CONTAINER="${{ inputs.STORAGE_CONTAINER }}"
+            export RESOURCE_GROUP="${{ inputs.RESOURCE_GROUP }}"
+
+            # Azure Login environment variables
+            export ARM_SUBSCRIPTION_ID="${{ inputs.ARM_SUBSCRIPTION_ID }}"
+            export ARM_TENANT_ID="${{ inputs.ARM_TENANT_ID }}"
+            export ARM_CLIENT_SECRET="${{ inputs.ARM_CLIENT_SECRET }}"
+            export SUBSCRIPTION_ID="${{ inputs.SUBSCRIPTION_ID }}"
+            export ARM_CLIENT_ID="${{ inputs.ARM_CLIENT_ID }}"
+
+            # Get the latest backup file
+            BACKUP_FILE=$(ls backup_*.json | tail -n 1)
+            ACCOUNT_KEY=$(az storage account keys list --resource-group $RESOURCE_GROUP --account-name $STORAGE_ACCOUNT_NAME --query '[0].value' -o tsv)
+            export ARM_ACCESS_KEY=$ACCOUNT_KEY
+            # Upload the backup file to Azure Storage
+            az storage blob upload \
+            --account-name ${{ inputs.STORAGE_ACCOUNT_NAME }} \
+            --account-key ${ARM_ACCESS_KEY} \
+            --container-name ${{ inputs.STORAGE_CONTAINER }} \
+            --file $BACKUP_FILE \
+            --name $(basename $BACKUP_FILE)
+    
+    - name: Azure CLI script Az Copy Upload Backup
+      if: ${{ inputs.action == 'full_backup' }}
+      uses: azure/cli@v2
+      with:
+        azcliversion: latest
+        inlineScript: |
+            # Storage Account environment variables
+            export STORAGE_ACCOUNT_NAME="${{ inputs.STORAGE_ACCOUNT_NAME }}"
+            export STORAGE_CONTAINER="${{ inputs.STORAGE_CONTAINER }}"
+            export RESOURCE_GROUP="${{ inputs.RESOURCE_GROUP }}"
+
+            # Azure Login environment variables
+            export ARM_SUBSCRIPTION_ID="${{ inputs.ARM_SUBSCRIPTION_ID }}"
+            export ARM_TENANT_ID="${{ inputs.ARM_TENANT_ID }}"
+            export ARM_CLIENT_SECRET="${{ inputs.ARM_CLIENT_SECRET }}"
+            export SUBSCRIPTION_ID="${{ inputs.SUBSCRIPTION_ID }}"
+            export ARM_CLIENT_ID="${{ inputs.ARM_CLIENT_ID }}"
+
+            # Get the account key for the Storage Account
+            ACCOUNT_KEY=$(az storage account keys list --resource-group $RESOURCE_GROUP --account-name $STORAGE_ACCOUNT_NAME --query '[0].value' -o tsv)
+            export ARM_ACCESS_KEY=$ACCOUNT_KEY
+
+            # Upload all files in the ./backup folder to Azure Storage
+            az storage blob upload-batch \
+            --account-name ${{ inputs.STORAGE_ACCOUNT_NAME }} \
+            --account-key ${ARM_ACCESS_KEY} \
+            --destination ${{ inputs.STORAGE_CONTAINER }} \
+            --source ./backup
+
+    # - name: Run Python script for restore
+    #   if: ${{ inputs.action == 'restore' }}
+    #   run: |
+    #     # CosmosDB environment variables
+    #     export COSMOS_KEY="${{ inputs.COSMOS_KEY }}"
+    #     export COSMOS_ENDPOINT="${{ inputs.COSMOS_ENDPOINT }}"
+    #     export CONTAINER_NAME="${{ inputs.CONTAINER_NAME }}"
+    #     export DATABASE_NAME="${{ inputs.DATABASE_NAME }}"
+    #     export RESOURCE_GROUP="${{ inputs.RESOURCE_GROUP }}"
+
+    #     # Storage Account environment variables
+    #     export STORAGE_ACCOUNT_NAME="${{ inputs.STORAGE_ACCOUNT_NAME }}"
+    #     export STORAGE_CONTAINER="${{ inputs.STORAGE_CONTAINER }}"
+
+    #     # Azure Login environment variables
+    #     export ARM_SUBSCRIPTION_ID="${{ inputs.ARM_SUBSCRIPTION_ID }}"
+    #     export ARM_TENANT_ID="${{ inputs.ARM_TENANT_ID }}"
+    #     export ARM_CLIENT_SECRET="${{ inputs.ARM_CLIENT_SECRET }}"
+    #     export SUBSCRIPTION_ID="${{ inputs.SUBSCRIPTION_ID }}"
+    #     export ARM_CLIENT_ID="${{ inputs.ARM_CLIENT_ID }}"
+    #     echo "Iniciando Job de restore"
+    #     python ${{ github.action_path }}/"${{ inputs.action }}".py 
+
+    #   shell: bash
+
