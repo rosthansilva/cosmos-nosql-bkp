@@ -2,171 +2,47 @@
 
 ![CosmosDB Backup](https://markpatton.cloud/wp-content/uploads/2020/03/definingbackuppolicycosmosdb-img-e1585163856238.png)
 
-This GitHub Action automates the process of backing up a CosmosDB database to Azure Storage. It is designed to run on a schedule or be triggered manually via the `workflow_dispatch` event.
+**CosmosDB Full Backup and Restore with GitHub Actions**  
+This repository contains workflows to perform full backup and full restore of CosmosDB databases using GitHub Actions. Below, you will find detailed instructions.
 
-## Workflow Example Overview
+---
 
-- **Name**: Backup CosmosDB
-- **Triggers**:
-    - Scheduled as a cron job.
-    - Can also be triggered manually.
-    - Runs on the `main` branch upon push events.
+## 🚀 How to Use the Full Backup Workflow
 
-## Job Details
+The Full Backup workflow performs a backup of all databases and containers in a CosmosDB account and stores the data in Azure Blob Storage.
 
-### Job: `backup`
-- **Environment**: `ubuntu-latest`
-- **Steps**:
-    1. **Checkout Repository**: Uses the `actions/checkout@v4` action to clone the repository.
-    2. **Backup CosmosDB**: Executes a custom GitHub Action located at `.github/actions/cosmosdb-backup` to perform the backup operation.
+### 📋 Prerequisites
 
-## Inputs for Backup Action
+Configure the Secrets in the GitHub repository:
 
-The following inputs are required for the backup action:
+- `AZURE_CREDENTIALS`: Azure credentials in JSON format.
+- `ARM_CLIENT_ID`, `ARM_CLIENT_SECRET`, `ARM_SUBSCRIPTION_ID`, `ARM_TENANT_ID`: Azure Resource Manager details.
+- `COSMOS_KEY`: Access key for CosmosDB.
+- `STORAGE_ACCOUNT_NAME`, `STORAGE_CONTAINER`: Azure Storage account details.
 
-- **Azure Credentials**:
-    - `AZURE_CREDENTIALS`: Azure credentials stored as a GitHub secret.
-    - `ARM_CLIENT_ID`: Azure Resource Manager client ID.
-    - `ARM_CLIENT_SECRET`: Azure Resource Manager client secret.
-    - `ARM_SUBSCRIPTION_ID`: Azure subscription ID.
-    - `ARM_TENANT_ID`: Azure tenant ID.
+Ensure that CosmosDB and Azure Blob Storage are properly configured.
 
-- **CosmosDB Configuration**:
-    - `COSMOS_ENDPOINT`: The endpoint URL of the CosmosDB account.
-    - `COSMOS_KEY`: The primary key for the CosmosDB account.
-    - `DATABASE_NAME`: The name of the CosmosDB database to back up.
-    - `CONTAINER_NAME`: The name of the CosmosDB container to back up.
+### 🛠️ Workflow Configuration
 
-- **Azure Storage Configuration**:
-    - `STORAGE_ACCOUNT_NAME`: The name of the Azure Storage account where the backup will be stored.
-    - `STORAGE_CONTAINER`: The name of the Azure Storage container for the backup.
+The workflow file is located at:  
+📂 `backup-cosmosdb.yml`
 
-- **Resource Group**:
-    - `RESOURCE_GROUP`: The name of the Azure resource group containing the CosmosDB account.
-
-- **Action**:
-    - `action`: Specifies the operation to perform. In this case, it is set to `"backup"`.
-    - **Restore Action**: The restore functionality is not yet implemented. This feature is planned for future development to allow restoring data from Azure Storage back to a CosmosDB database.
-
-## Usage
-
-To use this workflow, ensure that all required secrets are configured in your GitHub repository settings. The workflow will automatically back up the specified CosmosDB database to the designated Azure Storage container.
-
-## Example Workflow File
-
-Below is an example of a GitHub Actions workflow file to back up a CosmosDB database:
+#### Example of Full Backup Execution:
 
 ```yaml
-name: Backup CosmosDB
+name: Full Backup CosmosDB
 
 on:
-    workflow_dispatch:
-    schedule:
-        - cron: "0 2 * * *" # Every day at 2 AM UTC
-    push:
-        branches:
-            - main
-
-jobs:
-    backup:
-        runs-on: ubuntu-latest
-
-        steps:
-            - name: Checkout repo
-                uses: actions/checkout@v4
-
-            - name: Backup CosmosDB to Azure Storage
-                uses: ./.github/actions/cosmosdb-backup
-                with:
-                    AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
-                    ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-                    ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-                    ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-                    ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-                    COSMOS_ENDPOINT: "https://cosmos-cosmosdb-account.documents.azure.com:443" #$${{ secrets.COSMOS_ENDPOINT }}
-                    COSMOS_KEY: ${{ secrets.COSMOS_KEY }}
-                    CONTAINER_NAME: "cosmos-container-src"
-                    DATABASE_NAME: "cosmos-database"
-                    RESOURCE_GROUP: "cosmos-resources"
-                    STORAGE_ACCOUNT_NAME: "cosmosbkp1123"
-                    STORAGE_CONTAINER: "cosmos-backup-container"
-                    SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-                    action: "backup" # "full_backup" to backup all databases and containers.
-```
-## Github Restore Script in Composite Actions
-
-## Overview
-This workflow is designed to restore data from Azure Storage to an Azure CosmosDB instance. It utilizes a custom composite action to securely interact with Azure resources and perform the restore operation.
-
-## Key Features
-- **Restore Trigger**: The workflow can be triggered manually via `workflow_dispatch` or on pushes to the `main` branch.
-- **Custom Composite Action**: The `.github/actions/cosmosdb-backup` action is used to handle the restore logic. Ensure this action is implemented and available in the repository.
-- **Secure Credentials**: Azure credentials and CosmosDB keys are securely stored as GitHub secrets and passed to the workflow.
-
-## Steps
-### Restore Job
-1. **Checkout Repository**: Uses the `actions/checkout@v4` action to clone the repository.
-2. **Restore CosmosDB**: Executes the custom composite action to restore the specified CosmosDB database and container from Azure Storage.
-
-## Configuration
-- **Azure Credentials**: Ensure the following secrets are configured in the repository:
-    - `AZURE_CREDENTIALS`
-    - `ARM_CLIENT_ID`
-    - `ARM_CLIENT_SECRET`
-    - `ARM_SUBSCRIPTION_ID`
-    - `ARM_TENANT_ID`
-    - `COSMOS_KEY`
-- **CosmosDB Details**: Update the `COSMOS_ENDPOINT`, `CONTAINER_NAME`, `DATABASE_NAME`, and `RESOURCE_GROUP` values as per your CosmosDB instance.
-- **Azure Storage Details**: Specify the `STORAGE_ACCOUNT_NAME` and `STORAGE_CONTAINER` for the source of the restore operation.
-
-## Example Workflow
-Below is an example of how to configure the restore workflow:
-
-- Ensure that the custom action `.github/actions/cosmosdb-backup` is implemented and available in the repository. Alternatively, replace it with a publicly available action in the format `org/repo@branch` if needed.
-
-```
-name: Backup CosmosDB
-
-on:
-  workflow_dispatch:
+  workflow_dispatch: # Allows manual execution
   schedule:
-    - cron: "0 2 * * *" # Every day at 2 AM UTC
-  push:
-    branches:
-      - main
+    - cron: "0 2 * * *" # Runs daily at 2 AM UTC
 
 jobs:
-  backup:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      <!-- 
-      ## simple backup example
-      - name: Backup CosmosDB to Azure Storage
-        uses: ./.github/actions/cosmosdb-backup
-        with:
-          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
-          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-          COSMOS_ENDPOINT: "https://cosmos-cosmosdb-account.documents.azure.com:443"
-          COSMOS_KEY: ${{ secrets.COSMOS_KEY }}
-          CONTAINER_NAME: "cosmos-container-src"
-          DATABASE_NAME: "cosmos-database"
-          RESOURCE_GROUP: "cosmos-resources"
-          STORAGE_ACCOUNT_NAME: "cosmosbkp1123"
-          STORAGE_CONTAINER: "cosmos-backup-container"
-          action: "backup" -->
-
   full_backup:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Full Backup CosmosDB to Azure Storage
@@ -175,15 +51,86 @@ jobs:
           AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
           ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-          COSMOS_ENDPOINT: "https://cosmos-cosmosdb-account-restore.documents.azure.com:443"
+          COSMOS_ENDPOINT: "https://<cosmosdb-account>.documents.azure.com:443"
           COSMOS_KEY: ${{ secrets.COSMOS_KEY }}
-          CONTAINER_NAME: "cosmos-container-src"
-          DATABASE_NAME: "cosmos-database"
+          RESOURCE_GROUP: "cosmos-resources"
+          STORAGE_ACCOUNT_NAME: "cosmosbkp1123"
+          STORAGE_CONTAINER: "cosmos-backup-container"
+          action: "full_backup"
+```
+
+### ▶️ How to Execute
+
+1. Go to the **Actions** tab in the GitHub repository.
+2. Select the **Full Backup CosmosDB** workflow.
+3. Click **Run workflow** and wait for execution.
+
+---
+
+## 🔄 How to Use the Full Restore Workflow
+
+The Full Restore workflow restores all databases and containers from a backup stored in Azure Blob Storage to a CosmosDB account.
+
+### 📋 Prerequisites
+
+Configure the Secrets in the GitHub repository:
+
+- `AZURE_CREDENTIALS`: Azure credentials in JSON format.
+- `ARM_CLIENT_ID`, `ARM_CLIENT_SECRET`, `ARM_SUBSCRIPTION_ID`, `ARM_TENANT_ID`: Azure Resource Manager details.
+- `COSMOS_KEY`: Access key for CosmosDB.
+- `STORAGE_ACCOUNT_NAME`, `STORAGE_CONTAINER`: Azure Storage account details.
+
+Ensure that the backup has been previously performed and is available in Azure Blob Storage.
+
+### 🛠️ Workflow Configuration
+
+The workflow file is located at:  
+📂 `restore-cosmosdb.yml`
+
+#### Example of Full Restore Execution:
+
+```yaml
+name: Full Restore CosmosDB
+
+on:
+  workflow_dispatch: # Allows manual execution
+
+jobs:
+  full_restore:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Full Restore CosmosDB from Azure Storage
+        uses: ./.github/actions/cosmosdb-restore
+        with:
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          COSMOS_ENDPOINT: "https://<cosmosdb-account>.documents.azure.com:443"
+          COSMOS_KEY: ${{ secrets.COSMOS_KEY }}
           RESOURCE_GROUP: "cosmos-resources"
           STORAGE_ACCOUNT_NAME: "cosmosbkp1123"
           STORAGE_CONTAINER: "cosmos-backup-container"
           action: "full_restore"
-        
 ```
+
+### ▶️ How to Execute
+
+1. Go to the **Actions** tab in the GitHub repository.
+2. Select the **Full Restore CosmosDB** workflow.
+3. Click **Run workflow** and wait for execution.
+
+---
+
+## 📝 Notes
+
+- **Logs**: During execution, workflow logs will be available in the **Actions** tab.
+- **Errors**: If an error occurs, check the logs to identify the issue.
+- **Scheduling**: You can configure workflow scheduling using cron syntax.
