@@ -25,9 +25,6 @@ inputs:
   COSMOS_KEY:
     description: 'Access key for CosmosDB'
     required: true
-  CONTAINER_NAME:
-    description: 'Name of the container in CosmosDB'
-    required: true
   RESOURCE_GROUP:
     description: 'Resource group of the CosmosDB'
     required: true
