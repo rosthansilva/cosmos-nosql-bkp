@@ -1,21 +1,20 @@
-name : 🌌 Backup and Restore CosmosDB
+name: 🌌 Backup and Restore CosmosDB
 
 env:
   DEFAULT_TIMESTAMP: "2025-05-05-2127"
   DEFAULT_ACTION: "full_restore"
 
-inputs:
-  timestamp:
-    description: "Timestamp for the backup to restore"
-    required: false
-    default: ${{ env.DEFAULT_TIMESTAMP }}
-  action:
-    description: "Action to perform (e.g., full_restore)"
-    required: false
-    default: ${{ env.DEFAULT_ACTION }}
-
 on:
   workflow_dispatch:
+    inputs:
+      timestamp:
+        description: "Timestamp for the backup to restore"
+        required: false
+        default: "2025-05-05-2127"
+      action:
+        description: "Action to perform (e.g., full_restore)"
+        required: false
+        default: "full_restore"
   schedule:
     - cron: "0 2 * * *" # Every day at 2 AM UTC
   push:
@@ -45,5 +44,5 @@ jobs:
           RESOURCE_GROUP: "cosmos-resources"
           STORAGE_ACCOUNT_NAME: "cosmosbkp1123"
           STORAGE_CONTAINER: "cosmos-backup-container"
-          TIMESTAMP:  "2025-05-05-2127"
-          action: "full_restore"
+          TIMESTAMP: ${{ github.event.inputs.timestamp || env.DEFAULT_TIMESTAMP }}
+          action: ${{ github.event.inputs.action || env.DEFAULT_ACTION }}
