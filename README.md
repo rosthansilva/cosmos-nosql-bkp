@@ -94,9 +94,8 @@ jobs:
                     action: "backup" # "full_backup" to backup all databases and containers.
 ```
 
-"""
-This script performs a backup of Cosmos DB containers and stores the data in Azure Blob Storage. 
-The backup files are saved locally in a structured directory format and can be uploaded to Azure Storage.
+the composite action runs a python script that performs a backup of Cosmos DB containers and stores the data in Azure Blob Storage. 
+The backup files are saved locally in a structured directory and after use azure cli to uploaded to Azure Storage.
 
 ### How to Locate the Backup File:
 1. **Backup Directory Structure**:
@@ -113,13 +112,17 @@ The backup files are saved locally in a structured directory format and can be u
 
     ![Restore Process Output](./image/Captura%20de%20tela%202025-05-12%20203235.png)
 
+    2. **Backup File Naming**:
+        - Each backup file is named using the following pattern:
+          ```
+          cosmosdb_nosql_backup_{cosmos_account_name}_{database_name}_{container_name}_{timestamp}.json
+          ```
+          - This ensures that the file name is unique and descriptive.
 
-2. **Backup File Naming**:
-    - Each backup file is named using the following pattern:
-      ```
-      cosmosdb_nosql_backup_{cosmos_account_name}_{database_name}_{container_name}_{timestamp}.json
-      ```
-      - This ensures that the file name is unique and descriptive.
+        **Examples**:
+        - `cosmosdb_nosql_backup_mycosmosaccount_mydatabase_mycontainer_2023-03-15-1230.json`
+        - `cosmosdb_nosql_backup_testaccount_testdatabase_testcontainer_2023-05-10-1015.json`
+        - `cosmosdb_nosql_backup_prodaccount_proddatabase_prodcontainer_2023-07-20-0830.json`
 
 3. **Example Backup File Path**:
     ```
