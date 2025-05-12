@@ -91,6 +91,6 @@ runs:
           COSMOS_ENDPOINT_HOST=$(echo "${COSMOS_ENDPOINT}" | awk -F[/:] '{print $4}')
           echo "Extracted CosmosDB host: ${COSMOS_ENDPOINT_HOST}"
           echo "Iniciando Job de restore"
-          python ${{ github.action_path }}/restore.py full_restore.py --date "${{ inputs.TIMESTAMP }}" --source "${{ inputs.COSMOS_DB_SOURCE_ACCOUNT }}" --destination $COSMOS_ENDPOINT_HOST
+          python ${{ github.action_path }}/"${{ inputs.action }}".py --date "${{ inputs.TIMESTAMP }}" --source "${{ inputs.COSMOS_DB_SOURCE_ACCOUNT }}" --destination $COSMOS_ENDPOINT_HOST
 
       shell: bash

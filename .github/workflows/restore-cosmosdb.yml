@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Restore CosmosDB from Azure Storage
-        uses: ./.github/actions/cosmosdb-backup
+        uses: ./.github/actions/cosmosdb-restore
         with:
           AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
@@ -32,11 +32,10 @@ jobs:
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
           COSMOS_DB_SOURCE_ACCOUNT: "cosmos-cosmosdb-account"
           COSMOS_ENDPOINT: "https://cosmos-cosmosdb-account-restore.documents.azure.com:443"
-          COSMOS_KEY: ${{ secrets.COSMOS_KEY }}
+          COSMOS_KEY: ${{ secrets.RESTORE_KEY }}
           CONTAINER_NAME: "cosmos-container-src"
           RESOURCE_GROUP: "cosmos-resources"
           STORAGE_ACCOUNT_NAME: "cosmosbkp1123"
           STORAGE_CONTAINER: "cosmos-backup-container"
-          BACKUP_FILENAME: "backup-file.bkp"
           TIMESTAMP: ${{ github.event.inputs.timestamp || 'default-timestamp' }}
           action: "restore"
