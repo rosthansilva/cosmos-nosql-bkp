@@ -112,6 +112,8 @@ The backup files are saved locally in a structured directory and after use azure
 
     ![Restore Process Output](./image/Captura%20de%20tela%202025-05-12%20203235.png)
 
+    > in this image you can see the path sctructure and the json file name
+
     2. **Backup File Naming**:
         - Each backup file is named using the following pattern:
           ```
