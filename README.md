@@ -94,6 +94,53 @@ jobs:
                     action: "backup" # "full_backup" to backup all databases and containers.
 ```
 
+"""
+This script performs a backup of Cosmos DB containers and stores the data in Azure Blob Storage. 
+The backup files are saved locally in a structured directory format and can be uploaded to Azure Storage.
+
+### How to Locate the Backup File:
+1. **Backup Directory Structure**:
+    - The backup files are stored in a directory structure based on the Cosmos DB account name, database name, and container name.
+    - Example directory structure:
+      ```
+      ./backup/{cosmos_account_name}/{timestamp}/{database_name}/{container_name}/
+      ```
+      - `cosmos_account_name`: Extracted from the `COSMOS_ENDPOINT` environment variable.
+      - `timestamp`: The current date and time in the format `YYYY-MM-DD-HHMM`.
+      - `database_name`: The name of the Cosmos DB database being backed up.
+      - `container_name`: The name of the container within the database.
+
+
+    ![Restore Process Output](./image/Captura%20de%20tela%202025-05-12%20203235.png)
+
+
+2. **Backup File Naming**:
+    - Each backup file is named using the following pattern:
+      ```
+      cosmosdb_nosql_backup_{cosmos_account_name}_{database_name}_{container_name}_{timestamp}.json
+      ```
+      - This ensures that the file name is unique and descriptive.
+
+3. **Example Backup File Path**:
+    ```
+    ./backup/mycosmosaccount/2023-03-15-1230/mydatabase/mycontainer/cosmosdb_nosql_backup_mycosmosaccount_mydatabase_mycontainer_2023-03-15-1230.json
+    ```
+
+4. **Backup Content**:
+    - The backup file contains all documents from the specified container in JSON format.
+    - Each document includes an additional key, `container_name`, to indicate the source container.
+
+### Prerequisites:
+- Ensure all required environment variables are set:
+  - `COSMOS_ENDPOINT`, `COSMOS_KEY`, `SUBSCRIPTION_ID`, `RESOURCE_GROUP`, `STORAGE_ACCOUNT_NAME`, `STORAGE_CONTAINER`.
+- Authenticate with Azure using `DefaultAzureCredential`.
+
+### Notes:
+- If the specified Azure Storage Account does not exist, it will be created automatically.
+- The script logs the progress and any errors encountered during the backup process.
+"""
+
+
 ## Github Restore Script in Composite Actions
 
 ## Overview
