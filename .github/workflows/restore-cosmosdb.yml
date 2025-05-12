@@ -1,4 +1,4 @@
-name: Backup CosmosDB
+name: Backup and Restore CosmosDB
 
 on:
   workflow_dispatch:
@@ -15,32 +15,14 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-
-      - name: Backup CosmosDB to Azure Storage
-        uses: ./.github/actions/cosmosdb-backup
-        with:
-          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
-          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-          COSMOS_ENDPOINT: "https://cosmos-cosmosdb-account.documents.azure.com:443"
-          COSMOS_KEY: ${{ secrets.COSMOS_KEY }}
-          CONTAINER_NAME: "cosmos-container-src"
-          DATABASE_NAME: "cosmos-database"
-          RESOURCE_GROUP: "cosmos-resources"
-          STORAGE_ACCOUNT_NAME: "cosmosbkp1123"
-          STORAGE_CONTAINER: "cosmos-backup-container"
-          action: "backup"
-
-  full_backup:
+  restore:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Full Backup CosmosDB to Azure Storage
+      - name: Restore CosmosDB from Azure Storage
         uses: ./.github/actions/cosmosdb-backup
         with:
           AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
@@ -48,11 +30,13 @@ jobs:
           ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          COSMOS_DB_SOURCE_ACCOUNT: "cosmos-cosmosdb-account"
           COSMOS_ENDPOINT: "https://cosmos-cosmosdb-account-restore.documents.azure.com:443"
           COSMOS_KEY: ${{ secrets.COSMOS_KEY }}
           CONTAINER_NAME: "cosmos-container-src"
-          DATABASE_NAME: "cosmos-database"
           RESOURCE_GROUP: "cosmos-resources"
           STORAGE_ACCOUNT_NAME: "cosmosbkp1123"
           STORAGE_CONTAINER: "cosmos-backup-container"
-          action: "full_restore"
+          BACKUP_FILENAME: "backup-file.bkp"
+          TIMESTAMP: ${{ github.event.inputs.timestamp || 'default-timestamp' }}
+          action: "restore"
