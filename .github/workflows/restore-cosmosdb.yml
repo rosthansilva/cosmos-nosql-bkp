@@ -27,7 +27,6 @@ jobs:
           COSMOS_DB_SOURCE_ACCOUNT: "cosmos-cosmosdb-account"
           COSMOS_ENDPOINT: "https://cosmos-cosmosdb-account-restore.documents.azure.com:443"
           COSMOS_KEY: ${{ secrets.RESTORE_KEY }}
-          STORAGE_ACCOUNT_KEY: ${{ secrets.STORAGE_ACCOUNT_KEY }}
           RESOURCE_GROUP: "cosmos-resources"
           STORAGE_ACCOUNT_NAME: "cosmosbkp1123"
           STORAGE_CONTAINER: "cosmos-backup-container"
