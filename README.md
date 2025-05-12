@@ -137,32 +137,6 @@ on:
       - main
 
 jobs:
-  backup:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      <!-- 
-      ## simple backup example
-      - name: Backup CosmosDB to Azure Storage
-        uses: ./.github/actions/cosmosdb-backup
-        with:
-          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
-          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-          COSMOS_ENDPOINT: "https://cosmos-cosmosdb-account.documents.azure.com:443"
-          COSMOS_KEY: ${{ secrets.COSMOS_KEY }}
-          CONTAINER_NAME: "cosmos-container-src"
-          DATABASE_NAME: "cosmos-database"
-          RESOURCE_GROUP: "cosmos-resources"
-          STORAGE_ACCOUNT_NAME: "cosmosbkp1123"
-          STORAGE_CONTAINER: "cosmos-backup-container"
-          action: "backup" -->
-
   full_backup:
     runs-on: ubuntu-latest
 
@@ -187,6 +161,19 @@ jobs:
           STORAGE_CONTAINER: "cosmos-backup-container"
           action: "full_restore"
 ```
+
+## Desired Output
+
+After running the GitHub Action, you can verify the successful execution and inspect the output directly in the GitHub Actions logs.
+
+### Example Output Image
+
+Below is an example of how the output might look in the GitHub Actions interface:
+
+![GitHub Action Output](./image/restore_output.png)
+
+This image represents the logs and status of the backup process, including steps such as repository checkout, authentication, and the actual backup operation. Replace the placeholder image with a screenshot of your workflow's execution for better clarity.
+
 
 ## How to Locate Backup Files in Azure Storage
 
