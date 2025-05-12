@@ -290,7 +290,19 @@ If you want to run the backup process locally without using GitHub Actions, you 
    - Ensure you have Python 3.8 or later installed on your machine.
    - Install the required Python packages by running:
      ```bash
-     pip install -r requirements.txt
+   
+    # Create a virtual environment
+    python -m venv venv
+
+    # Activate the virtual environment
+    # On Windows:
+    venv\Scripts\activate
+    # On macOS/Linux:
+    source venv/bin/activate
+
+    # Install the required Python packages
+    pip install -r requirements.txt
+  
      ```
 
 2. **Azure CLI**:
@@ -336,8 +348,8 @@ export SUBSCRIPTION_ID="your-subscription-id"
 Once the environment variables are set, you can run the backup script:
 
 ```bash
-cd python ./.github/actions/cosmosdb-restore full_restore.py
-```
+python ./.github/actions/cosmosdb-restore/full_restore.py --date $backup_date --source $source_cosmos_account --destination $COSMOS_ENDPOINT_HOST
+``` 
 
 ### Support
 
