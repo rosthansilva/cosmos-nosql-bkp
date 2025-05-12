@@ -125,6 +125,9 @@ Below is an example of how to configure the restore workflow:
 
 - Ensure that the custom action `.github/actions/cosmosdb-backup` is implemented and available in the repository. Alternatively, replace it with a publicly available action in the format `org/repo@branch` if needed.
 
+
+## Push and schedule example
+
 ```yaml
 name: Backup CosmosDB
 
@@ -160,6 +163,75 @@ jobs:
           STORAGE_ACCOUNT_NAME: "cosmosbkp1123"
           STORAGE_CONTAINER: "cosmos-backup-container"
           action: "full_restore"
+```
+
+
+## Push and Manual Trigger Example 
+
+```
+name: 🌌 Backup and Restore CosmosDB
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      timestamp:
+        description: "Timestamp for the backup to restore"
+        required: true
+        default: "2025-05-05-2127"
+      action:
+        description: "Action to perform (e.g., full_restore)"
+        required: true
+        default: "full_restore"
+      cosmos_db_source_account:
+        description: "Source Cosmos DB account name"
+        required: true
+        default: "cosmos-cosmosdb-account"
+      cosmos_endpoint:
+        description: "Destination Cosmos DB endpoint"
+        required: true
+        default: "https://cosmos-cosmosdb-account-restore.documents.azure.com:443"
+      storage_account_name:
+        description: "Azure Storage Account Name"
+        required: true
+        default: "cosmosbkp1123"
+      storage_container:
+        description: "Azure Storage Container Name"
+        required: true
+        default: "cosmos-backup-container"
+      resource_group:
+        description: "Resource Group Name"
+        required: true
+        default: "cosmos-resources"
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Restore CosmosDB from Azure Storage
+        uses: ./.github/actions/cosmosdb-restore
+        with:
+          COSMOS_DB_SOURCE_ACCOUNT: ${{ inputs.cosmos_db_source_account }}
+          COSMOS_ENDPOINT: ${{ inputs.cosmos_endpoint }}
+          COSMOS_KEY: ${{ secrets.RESTORE_KEY }}
+          STORAGE_ACCOUNT_NAME: ${{ inputs.storage_account_name }}
+          STORAGE_CONTAINER: ${{ inputs.storage_container }}
+          STORAGE_ACCOUNT_KEY: ${{ secrets.STORAGE_ACCOUNT_KEY }}
+          RESOURCE_GROUP: ${{ inputs.resource_group }}
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          TIMESTAMP: ${{ inputs.timestamp }}
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+          action: ${{ inputs.action }}
+
 ```
 
 ## Desired Output
