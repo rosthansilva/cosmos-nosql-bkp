@@ -366,3 +366,7 @@ Once the environment variables are set, you can run the backup script:
 ```bash
 cd python ./.github/actions/cosmosdb-restore full_restore.py
 ```
+
+### Support
+
+If you need assistance or have any questions, please contact [rosthan.pereira@eu.com](mailto:rosthan.pereira@eu.com).
