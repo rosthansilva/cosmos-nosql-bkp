@@ -289,21 +289,20 @@ If you want to run the backup process locally without using GitHub Actions, you 
 1. **Python Environment**:
    - Ensure you have Python 3.8 or later installed on your machine.
    - Install the required Python packages by running:
-     ```bash
-   
-    # Create a virtual environment
-    python -m venv venv
+    
+    ```bash
+      # Create a virtual environment
+      python -m venv venv
 
-    # Activate the virtual environment
-    # On Windows:
-    venv\Scripts\activate
-    # On macOS/Linux:
-    source venv/bin/activate
+      # Activate the virtual environment
+      # On Windows:
+      venv\Scripts\activate
+      # On macOS/Linux:
+      source venv/bin/activate
 
-    # Install the required Python packages
-    pip install -r requirements.txt
-  
-     ```
+      # Install the required Python packages
+      pip install -r requirements.txt
+    ```
 
 2. **Azure CLI**:
    - Install and log in to the Azure CLI:
