@@ -1,4 +1,4 @@
-: 🌌 Backup and Restore CosmosDB
+name : 🌌 Backup and Restore CosmosDB
 
 on:
   workflow_dispatch:
