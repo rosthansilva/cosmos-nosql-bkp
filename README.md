@@ -148,7 +148,6 @@ The backup files are saved locally in a structured directory and after use azure
 
 ## Github Restore Script in Composite Actions
 
-## Overview
 This workflow is designed to restore data from Azure Storage to an Azure CosmosDB instance. It utilizes a custom composite action to securely interact with Azure resources and perform the restore operation.
 
 ## Key Features
