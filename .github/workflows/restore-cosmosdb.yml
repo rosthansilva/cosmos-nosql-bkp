@@ -9,12 +9,6 @@ on:
       - main
 
 jobs:
-  backup:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
   restore:
     runs-on: ubuntu-latest
 
