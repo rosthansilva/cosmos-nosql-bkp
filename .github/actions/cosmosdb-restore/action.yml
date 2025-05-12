@@ -28,6 +28,9 @@ inputs:
   RESOURCE_GROUP:
     description: 'Resource group of the CosmosDB'
     required: true
+  STORAGE_ACCOUNT_KEY:
+    description: 'Access key for the Azure Storage Account'
+    required: true
   STORAGE_ACCOUNT_NAME:
     description: 'Name of the Azure Storage Account'
     required: true
@@ -78,7 +81,7 @@ runs:
           export STORAGE_CONTAINER="${{ inputs.STORAGE_CONTAINER }}"
           export BACKUP_FILENAME="${{ inputs.BACKUP_FILENAME }}"
           export RESOURCE_GROUP="${{ inputs.RESOURCE_GROUP }}"
-          STORAGE_ACCOUNT_KEY=$(az storage account keys list --resource-group $RESOURCE_GROUP --account-name $STORAGE_ACCOUNT_NAME --query '[0].value' -o tsv)
+          STORAGE_ACCOUNT_KEY="${{ inputs.STORAGE_ACCOUNT_KEY }}"
           
           # Azure Login environment variables
           export ARM_SUBSCRIPTION_ID="${{ inputs.ARM_SUBSCRIPTION_ID }}"
