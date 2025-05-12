@@ -40,12 +40,10 @@ inputs:
   TIMESTAMP:
     description: 'Timestamp for the backup or restore operation'
     required: true
-    description: 'Name of the backup file in Azure Storage'
-    required: true
   action:
     description: 'Action to perform: restore, or full_restore'
     required: true
-    default: 'backup'
+    default: 'full_restore'
     options:
       - restore
       - full_restore
