@@ -71,26 +71,26 @@ runs:
       if: ${{ inputs.action == 'restore' || inputs.action == 'full_restore' }}
       run: |
         # CosmosDB environment variables
-          export COSMOS_ENDPOINT="${{ inputs.COSMOS_ENDPOINT }}"
-          export COSMOS_KEY="${{ inputs.COSMOS_KEY }}"
-          export CONTAINER_NAME="${{ inputs.CONTAINER_NAME }}"
-          export COSMOS_DB_SOURCE_ACCOUNT="${{ inputs.COSMOS_DB_SOURCE_ACCOUNT }}"
-
-          # Storage Account environment variables
-          export STORAGE_ACCOUNT_NAME="${{ inputs.STORAGE_ACCOUNT_NAME }}"
-          export STORAGE_CONTAINER="${{ inputs.STORAGE_CONTAINER }}"
-          export BACKUP_FILENAME="${{ inputs.BACKUP_FILENAME }}"
-          export RESOURCE_GROUP="${{ inputs.RESOURCE_GROUP }}"
-          STORAGE_ACCOUNT_KEY="${{ inputs.STORAGE_ACCOUNT_KEY }}"
-          
-          # Azure Login environment variables
-          export ARM_SUBSCRIPTION_ID="${{ inputs.ARM_SUBSCRIPTION_ID }}"
-          export ARM_TENANT_ID="${{ inputs.ARM_TENANT_ID }}"
-          export ARM_CLIENT_SECRET="${{ inputs.ARM_CLIENT_SECRET }}"
-          export ARM_CLIENT_ID="${{ inputs.ARM_CLIENT_ID }}"
-          COSMOS_ENDPOINT_HOST=$(echo "${COSMOS_ENDPOINT}" | awk -F[/:] '{print $4}')
-          echo "Extracted CosmosDB host: ${COSMOS_ENDPOINT_HOST}"
-          echo "Iniciando Job de restore"
-          python ${{ github.action_path }}/"${{ inputs.action }}".py --date "${{ inputs.TIMESTAMP }}" --source "${{ inputs.COSMOS_DB_SOURCE_ACCOUNT }}" --destination $COSMOS_ENDPOINT_HOST
-
+        export COSMOS_ENDPOINT="${{ inputs.COSMOS_ENDPOINT }}"
+        export COSMOS_KEY="${{ inputs.COSMOS_KEY }}"
+        export COSMOS_DB_SOURCE_ACCOUNT="${{ inputs.COSMOS_DB_SOURCE_ACCOUNT }}"
+    
+        # Storage Account environment variables
+        export STORAGE_ACCOUNT_NAME="${{ inputs.STORAGE_ACCOUNT_NAME }}"
+        export STORAGE_CONTAINER="${{ inputs.STORAGE_CONTAINER }}"
+        export BACKUP_FILENAME="${{ inputs.BACKUP_FILENAME }}"
+        export RESOURCE_GROUP="${{ inputs.RESOURCE_GROUP }}"
+        export STORAGE_ACCOUNT_KEY="${{ inputs.STORAGE_ACCOUNT_KEY }}"
+    
+        # Azure Login environment variables
+        export ARM_SUBSCRIPTION_ID="${{ inputs.ARM_SUBSCRIPTION_ID }}"
+        export ARM_TENANT_ID="${{ inputs.ARM_TENANT_ID }}"
+        export ARM_CLIENT_SECRET="${{ inputs.ARM_CLIENT_SECRET }}"
+        export ARM_CLIENT_ID="${{ inputs.ARM_CLIENT_ID }}"
+    
+        COSMOS_ENDPOINT_HOST=$(echo "${COSMOS_ENDPOINT}" | awk -F[/:] '{print $4}')
+        echo "Extracted CosmosDB host: ${COSMOS_ENDPOINT_HOST}"
+        echo "Iniciando Job de restore"
+        python ${{ github.action_path }}/"${{ inputs.action }}".py --date "${{ inputs.TIMESTAMP }}" --source "${{ inputs.COSMOS_DB_SOURCE_ACCOUNT }}" --destination $COSMOS_ENDPOINT_HOST
       shell: bash
+    
