@@ -4,6 +4,20 @@
 
 This GitHub Action automates the process of backing up a CosmosDB database to Azure Storage. It is designed to run on a schedule or be triggered manually via the `workflow_dispatch` event.
 
+## Azure Cloud Prerequisites
+
+Before running this GitHub Action, make sure the following resources already exist and are properly configured in your Azure account:
+
+- **Azure Account**: You must have an active Azure subscription.
+- **CosmosDB**: An Azure CosmosDB instance must be created, including the database and container you want to back up.
+- **Azure Storage Account**: An Azure Storage Account must be created to store the backup files.
+- **Blob Storage Container**: A container within the Storage Account to receive the backup files.
+- **Resource Group**: A resource group in Azure containing both the CosmosDB and the Storage Account.
+- **Permissions**: The identity used (Service Principal or Managed Identity) must have sufficient permissions to read from CosmosDB and write to Azure Storage (typically, the `Cosmos DB Account Reader Role` and the storage account key).
+- **GitHub Secrets**: Azure credentials and access keys must be added as secrets in your GitHub repository, as listed in the Inputs section.
+
+> **Note:** The workflow can automatically create the blob container if it does not exist, but the Storage Account and CosmosDB must be provisioned in advance.
+
 ## backup Workflow Example Overview
 
 - **Name**: Backup CosmosDB
